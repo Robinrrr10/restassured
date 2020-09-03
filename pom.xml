@@ -11,12 +11,6 @@
 	<name>restassured</name>
 	<url>http://maven.apache.org</url>
 
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<maven.compiler.source>14</maven.compiler.source>
-		<maven.compiler.target>14</maven.compiler.target>
-	</properties>
-
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.testng/testng -->
 		<dependency>
@@ -43,4 +37,55 @@
 			<version>2.11.2</version>
 		</dependency>
 	</dependencies>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+	</properties>
+	
+	<profiles>
+		<profile>
+			<id>codecoverage</id>
+			<properties>
+				<build.profile.id>codecoverage</build.profile.id>
+				<skip.integration.tests>false</skip.integration.tests>
+				<skip.unit.tests>false</skip.unit.tests>
+				<jacoco.skip>false</jacoco.skip>
+				<tomcat.host>192.168.222.31</tomcat.host>
+				<tomcat.port>36320</tomcat.port>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-surefire-plugin</artifactId>
+						<version>2.22.2</version>
+					</plugin>
+					<plugin>
+						<groupId>org.jacoco</groupId>
+					    <artifactId>jacoco-maven-plugin</artifactId>
+					    <version>0.8.5</version>
+					    <configuration>
+					    	<address>${tomcat.host}</address>
+					    	<port>${tomcat.port}</port>
+					    	<destFile>${project.build.directory}/jacoco.exec</destFile>
+					    	<reset>true</reset>
+					    	<append>false</append>
+					    </configuration>
+					    <executions>
+					    	<execution>
+					    		<phase>post-integration-test</phase>
+					    		<goals>
+					    			<goal>dump</goal>
+					    			<goal>report</goal>
+					    		</goals>
+					    	</execution>
+					    </executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	
 </project>
